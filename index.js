@@ -10,6 +10,7 @@ var row_counts;
 var mode = 1;
 var offset;
 var data;
+var period = 100;
 
 function shuffle(array){
 	var i = array.length;
@@ -99,7 +100,6 @@ function render(){
 }
 
 function handleMouseOver(d,i){
-	var period = 100;
 	d3.select(this)
 	.transition().duration(period)
 	.style("fill", mode?"white":"black");
@@ -110,7 +110,6 @@ function handleMouseOver(d,i){
 }
 
 function handleMouseOut(d,i){
-	var period = 100;
 	d3.select(this)
 	.transition().duration(period)
 	.style("fill", "grey");
@@ -125,12 +124,14 @@ function handleClick(d,i){
     .on("mouseover", null)
     .on("mouseout", null)
     .on("click", null)
-    .transition().duration(200)
-	.style("fill", grid[d.i][d.j]==mode?(grid[d.i][d.j]?"black":"white"):"red")
-	.transition().duration(500)
+	.style("fill", grid[d.i][d.j]!=mode?"red":"grey")
+	.transition().delay(period).duration(500)
 	.style("fill", grid[d.i][d.j]?"white":"black");
-}
 
+	d3.selectAll("#r"+d.i+",#c"+d.j)
+	.transition().duration(period)
+	.style("opacity", 1);
+}
 
 function init(){
 	var dim = n+2*rectangle+1;
