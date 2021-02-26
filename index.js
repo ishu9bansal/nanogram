@@ -97,6 +97,11 @@ function render(){
         .on("mouseout", handleMouseOut)
         .on("click", handleClick);
     });
+
+    svg.selectAll(".row").select("text")
+    .text(d => d.join(' '));
+    svg.selectAll(".col").select("text")
+    .text(d => d.join('\n'));
 }
 
 function handleMouseOver(d,i){
@@ -106,7 +111,7 @@ function handleMouseOver(d,i){
 
 	d3.selectAll("#r"+d.i+",#c"+d.j)
 	.transition().duration(period)
-	.style("opacity", 0.5);
+	.style("opacity", 0);
 }
 
 function handleMouseOut(d,i){
@@ -116,7 +121,7 @@ function handleMouseOut(d,i){
 
 	d3.selectAll("#r"+d.i+",#c"+d.j)
 	.transition().duration(period)
-	.style("opacity", 1);
+	.style("opacity", 0.5);
 }
 
 function handleClick(d,i){
@@ -159,37 +164,50 @@ function init(){
 
 	reset();
 
-	svg.selectAll(".row")
+	rs = svg.selectAll(".row")
 	.data(row_counts)
-	.enter().append("rect")
+	.enter().append("g")
 	.attr("class","row")
-	.attr("id",function(d,i) {
-		return "r"+i;
-	})
+	.attr("transform", (d,i) => "translate(0,"+resolution*(offset+i)+")");
+	rs.append("rect")
+	.attr("id", (d,i) => "r"+i)
 	.attr("width", resolution*rectangle)
 	.attr("height", resolution)
-	.attr("x", 0)
-	.attr("y", function(d,i) {
-		return resolution*(offset+i);
-	})
+	.attr("rx",resolution/3)
+	.style("opacity", 0.5)
 	.style("fill","grey")
 	.style("stroke", "black");
+	rs.append("text")
+	.attr("id", (d,i) => "tr"+i)
+	.attr("y", resolution/2)
+	.attr("x", resolution*rectangle/2)
+	.attr("dominant-baseline", "middle")
+	.attr("text-anchor", "middle")
+	.attr("fill", "black")
+	.text("r");
 
-	svg.selectAll(".col")
-	.data(row_counts)
-	.enter().append("rect")
+	cs = svg.selectAll(".col")
+	.data(col_counts)
+	.enter().append("g")
 	.attr("class","col")
-	.attr("id",function(d,i) {
-		return "c"+i;
-	})
-	.attr("width", resolution)
+	.attr("transform", (d,i) => "translate("+resolution*(offset+i)+",0)");
+	cs.append("rect")
+	.attr("id", (d,i) => "c"+i)
 	.attr("height", resolution*rectangle)
-	.attr("x", function(d,i) {
-		return resolution*(offset+i);
-	})
-	.attr("y", 0)
+	.attr("width", resolution)
+	.attr("rx",resolution/3)
+	.style("opacity", 0.5)
 	.style("fill","grey")
 	.style("stroke", "black");
+	cs.append("text")
+	.attr("id", (d,i) => "tc"+i)
+	.attr("x", resolution/2)
+	.attr("y", resolution*rectangle/2)
+	.attr("dominant-baseline", "middle")
+	.attr("text-anchor", "middle")
+	.style("white-space", "pre-line")
+	.attr("fill", "black")
+	.text("c");
 
 	mode = 1;
 	render();
