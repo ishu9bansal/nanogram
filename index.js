@@ -82,8 +82,8 @@ function reset(){
 function render(){
 	svg.selectAll(".square")
 	.transition().duration(250)
-    .attr("x", function(d) { return resolution*(offset+d.j); })
-    .attr("y", function(d) { return resolution*(offset+d.i); })
+    .attr("x", d => resolution*(offset+d.j))
+    .attr("y", d => resolution*(offset+d.i))
     .on("start", function() {
         d3.select(this)
         .on("mouseover", null)
@@ -104,17 +104,9 @@ function handleMouseOver(d,i){
 	.transition().duration(period)
 	.style("fill", mode?"white":"black");
 
-	// d3.select(".row")
-	// .filter(function(rd,ri) { 
-	// 	console.log(ri);
-	// 	return ri==d.i })
-	// .transition().duration(period)
-	// .style("opacity", 0.5);
-
-	// d3.select(".col")
-	// .filter(function(cd,cj) { return cj==d.j })
-	// .transition().duration(period)
-	// .style("opacity", 0.5);
+	d3.selectAll("#r"+d.i+",#c"+d.j)
+	.transition().duration(period)
+	.style("opacity", 0.5);
 }
 
 function handleMouseOut(d,i){
@@ -123,15 +115,9 @@ function handleMouseOut(d,i){
 	.transition().duration(period)
 	.style("fill", "grey");
 
-	// d3.select(".row")
-	// .filter(function(rd,ri) { return ri==d.i })
-	// .transition().duration(period)
-	// .style("opacity", 1);
-
-	// d3.select(".col")
-	// .filter(function(cd,cj) { return cj==d.j })
-	// .transition().duration(period)
-	// .style("opacity", 1);
+	d3.selectAll("#r"+d.i+",#c"+d.j)
+	.transition().duration(period)
+	.style("opacity", 1);
 }
 
 function handleClick(d,i){
@@ -176,11 +162,12 @@ function init(){
 	.data(row_counts)
 	.enter().append("rect")
 	.attr("class","row")
+	.attr("id",function(d,i) {
+		return "r"+i;
+	})
 	.attr("width", resolution*rectangle)
 	.attr("height", resolution)
-	.attr("x", function(d) {
-		return 0;
-	})
+	.attr("x", 0)
 	.attr("y", function(d,i) {
 		return resolution*(offset+i);
 	})
@@ -191,14 +178,15 @@ function init(){
 	.data(row_counts)
 	.enter().append("rect")
 	.attr("class","col")
+	.attr("id",function(d,i) {
+		return "c"+i;
+	})
 	.attr("width", resolution)
 	.attr("height", resolution*rectangle)
 	.attr("x", function(d,i) {
 		return resolution*(offset+i);
 	})
-	.attr("y", function(d,i) {
-		return 0;
-	})
+	.attr("y", 0)
 	.style("fill","grey")
 	.style("stroke", "black");
 
