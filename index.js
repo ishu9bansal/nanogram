@@ -2,7 +2,7 @@ var resolution;
 var svg;
 var width;
 var height;
-const n = 20;
+const n = 5;
 const rectangle = 2;
 var grid;
 var col_counts;
@@ -104,14 +104,26 @@ function render(){
     .text(d => d.join('\n'));
 }
 
+function guideControl(i,j,o){
+	d3.selectAll("#r"+i+",#c"+j)
+	.transition().duration(period)
+	.style("opacity", o);
+}
+
+function guidHighlight(i,j){
+	guideControl(i,j,0);
+}
+
+function guidLowlight(i,j){
+	guideControl(i,j,0.5);
+}
+
 function handleMouseOver(d,i){
 	d3.select(this)
 	.transition().duration(period)
 	.style("fill", mode?"white":"black");
 
-	d3.selectAll("#r"+d.i+",#c"+d.j)
-	.transition().duration(period)
-	.style("opacity", 0);
+	guidHighlight(d.i,d.j);
 }
 
 function handleMouseOut(d,i){
@@ -119,9 +131,7 @@ function handleMouseOut(d,i){
 	.transition().duration(period)
 	.style("fill", "grey");
 
-	d3.selectAll("#r"+d.i+",#c"+d.j)
-	.transition().duration(period)
-	.style("opacity", 0.5);
+	guidLowlight(d.i,d.j);
 }
 
 function handleClick(d,i){
@@ -130,12 +140,10 @@ function handleClick(d,i){
     .on("mouseout", null)
     .on("click", null)
 	.style("fill", grid[d.i][d.j]!=mode?"red":"grey")
-	.transition().delay(period).duration(500)
+	.transition().delay(period).duration(200)
 	.style("fill", grid[d.i][d.j]?"white":"black");
 
-	d3.selectAll("#r"+d.i+",#c"+d.j)
-	.transition().duration(period)
-	.style("opacity", 1);
+	guidLowlight(d.i,d.j);
 }
 
 function init(){
