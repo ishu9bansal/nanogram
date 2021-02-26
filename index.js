@@ -7,10 +7,11 @@ const rectangle = 2;
 var grid;
 var col_counts;
 var row_counts;
-var mode = 1;
+var mode = true;
 var offset;
 var data;
 var period = 100;
+var fill_fraction = 0.7;
 
 function shuffle(array){
 	var i = array.length;
@@ -44,13 +45,13 @@ function reset(){
 	for(var i=0; i<n; i++){
 		var temp = [];
 		for(var j=0; j<n; j++){
-			temp.push(Math.floor(2*Math.random()));
+			temp.push(Math.random()<fill_fraction);
 		}
 		grid.push(temp);
 	}
 	for(var i=0; i<n; i++){
 		var temp = [];
-		var c = grid[i][0];
+		var c = grid[i][0]?1:0;
 		for(var j=1; j<n; j++){
 			if(grid[i][j]){
 				c++;
@@ -65,7 +66,7 @@ function reset(){
 	}
 	for(var j=0; j<n; j++){
 		var temp = [];
-		var c = grid[0][j];
+		var c = grid[0][j]?1:0;
 		for(var i=1; i<n; i++){
 			if(grid[i][j]){
 				c++;
@@ -217,7 +218,7 @@ function init(){
 	.attr("fill", "black")
 	.text("c");
 
-	mode = 1;
+	mode = true;
 	render();
 	window.onkeypress = handleKeyPress;
 }
@@ -225,5 +226,5 @@ function init(){
 init();
 
 function handleKeyPress(e){
-	if(e.key==" ")	mode = 1-mode;
+	if(e.key==" ")	mode = !mode;
 }
